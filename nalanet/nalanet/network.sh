@@ -3,6 +3,8 @@
 # prepending $PWD/../bin to PATH to ensure we are picking up the correct binaries
 # this may be commented out to resolve installed version of tools if desired
 export PATH=${PWD}/../bin:$PATH
+
+#TODO: there are two locatiosn for configtx
 export FABRIC_CFG_PATH=${PWD}/configtx
 export VERBOSE=false
 
@@ -40,7 +42,7 @@ NONWORKING_VERSIONS="^1\.0\. ^1\.1\. ^1\.2\. ^1\.3\. ^1\.4\."
 # of go or other items could be added.
 function checkPrereqs() {
   ## Check if your have cloned the peer binaries and configuration files.
-  peer version > /dev/null 2>&1
+  peer version >/dev/null 2>&1
 
   if [[ $? -ne 0 || ! -d "../config" ]]; then
     errorln "Peer binary and configuration files not found.."
@@ -76,7 +78,7 @@ function checkPrereqs() {
   ## Check for fabric-ca
   if [ "$CRYPTO" == "Certificate Authorities" ]; then
 
-    fabric-ca-client version > /dev/null 2>&1
+    fabric-ca-client version >/dev/null 2>&1
     if [[ $? -ne 0 ]]; then
       errorln "fabric-ca-client binary not found.."
       errorln
@@ -156,20 +158,20 @@ function createOrgs() {
 
     infoln "Creating TaxAgent Identities"
 
-    set -x 
+    set -x
     cryptogen generate --config=./organizations/cryptogen/crypto-confgi-taxagent.yaml
     --output="organizations"
     res=$?
-    { set +x; }2>/dev/null 
-    if [$res -ne 0 ]; then
-        fatalln "Failed to generate certificates..."
-    fi 
-
+    { set +x; } 2>/dev/null
+    if [ $res -ne 0 ]; then
+      fatalln "Failed to generate certificates..."
+    fi
 
     infoln "Creating Orderer Org Identities"
 
     set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-orderer.yaml --output="organizations"
+    cryptogen generate --config=./organizations/cryptogen/crypto-config-orderer.yaml
+    --output="organizations"
     res=$?
     { set +x; } 2>/dev/null
     if [ $res -ne 0 ]; then
@@ -177,5 +179,4 @@ function createOrgs() {
     fi
 
   fi
-
-  
+}
