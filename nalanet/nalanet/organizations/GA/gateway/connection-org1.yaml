@@ -1,21 +1,21 @@
 ---
-name: test-network-org1
+name: test-network-ga
 version: 1.0.0
 client:
-  organization: Org1
+  organization: GA
   connection:
     timeout:
       peer:
         endorser: '300'
 organizations:
-  Org1:
-    mspid: Org1MSP
+  GA:
+    mspid: GAMSP
     peers:
-    - peer0.org1.example.com
+    - peer0.ga.nalanet.com
     certificateAuthorities:
-    - ca.org1.example.com
+    - ca.ga.nalanet.com
 peers:
-  peer0.org1.example.com:
+  peer0.ga.nalanet.com:
     url: grpcs://localhost:7051
     tlsCACerts:
       pem: |
@@ -35,12 +35,12 @@ peers:
           -----END CERTIFICATE-----
           
     grpcOptions:
-      ssl-target-name-override: peer0.org1.example.com
-      hostnameOverride: peer0.org1.example.com
+      ssl-target-name-override: peer0.ga.nalanet.com
+      hostnameOverride: peer0.ga.nalanet.com
 certificateAuthorities:
-  ca.org1.example.com:
+  ca.ga.nalanet.com:
     url: https://localhost:7054
-    caName: ca-org1
+    caName: ca-ga
     tlsCACerts:
       pem: 
         - |

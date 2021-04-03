@@ -237,10 +237,10 @@ ldap:
 # which are always stored in lower case.
 #############################################################################
 affiliations:
-   org1:
+   ga:
       - department1
       - department2
-   org2:
+   pa:
       - department1
 
 #############################################################################
@@ -301,16 +301,16 @@ signing:
 #     CA certificates though it can still issue end entity certificates.
 ###########################################################################
 csr:
-   cn: ca.example.com
+   cn: ca.nalanet.com
    names:
       - C: US
         ST: "New York"
         L: "New York"
-        O: example.com
+        O: nalanet.com
         OU:
    hosts:
      - localhost
-     - example.com
+     - nalanet.com
    ca:
       expiry: 131400h
       pathlength: 1
