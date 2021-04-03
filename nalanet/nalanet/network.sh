@@ -33,7 +33,7 @@ CC_COLL_CONFIG="NA"
 # chaincode init function defaults to "NA"
 CC_INIT_FCN="NA"
 # use this as the default docker-compose yaml definition
-COMPOSE_FILE_BASE=docker/docker-compose-test-net.yaml
+COMPOSE_FILE_BASE=docker/docker-compose-nalanet.yaml
 # docker-compose.yaml file if you are using couchdb
 COMPOSE_FILE_COUCH=docker/docker-compose-couch.yaml
 # certificate authorities compose file
@@ -393,6 +393,81 @@ function createOrgs() {
 
   fi
 
+}
+
+# Once you create the organization crypto material, you need to create the
+# genesis block of the orderer system channel. This block is required to bring
+# up any orderer nodes and create any application channels.
+
+# The configtxgen tool is used to create the genesis block. Configtxgen consumes a
+# "configtx.yaml" file that contains the definitions for the sample network. The
+# genesis block is defined using the "TwoOrgsOrdererGenesis" profile at the bottom
+# of the file. This profile defines a sample consortium, "SampleConsortium",
+# consisting of our two Peer Orgs. This consortium defines which organizations are
+# recognized as members of the network. The peer and ordering organizations are defined
+# in the "Profiles" section at the top of the file. As part of each organization
+# profile, the file points to a the location of the MSP directory for each member.
+# This MSP is used to create the channel MSP that defines the root of trust for
+# each organization. In essence, the channel MSP allows the nodes and users to be
+# recognized as network members. The file also specifies the anchor peers for each
+# peer org. In future steps, this same file is used to create the channel creation
+# transaction and the anchor peer updates.
+#
+#
+# If you receive the following warning, it can be safely ignored:
+#
+# [bccsp] GetDefault -> WARN 001 Before using BCCSP, please call InitFactories(). Falling back to bootBCCSP.
+#
+# You can ignore the logs regarding intermediate certs, we are not using them in
+# this crypto implementation.
+
+# Generate orderer system channel genesis block.
+function createConsortium() {
+  which configtxgen
+  if [ "$?" -ne 0 ]; then
+    fatalln "configtxgen tool not found."
+  fi
+
+  infoln "Generating Orderer Genesis block"
+
+  # Note: For some unknown reason (at least for now) the block file can't be
+  # named orderer.genesis.block or the orderer will fail to launch!
+  set -x
+  configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
+  res=$?
+  { set +x; } 2>/dev/null
+  if [ $res -ne 0 ]; then
+    fatalln "Failed to generate orderer genesis block..."
+  fi
+}
+
+# After we create the org crypto material and the system channel genesis block,
+# we can now bring up the peers and ordering service. By default, the base
+# file for creating the network is "docker-compose-test-net.yaml" in the ``docker``
+# folder. This file defines the environment variables and file mounts that
+# point the crypto material and genesis block that were created in earlier.
+
+# Bring up the peer and orderer nodes using docker compose.
+function networkUp() {
+  checkPrereqs
+  # generate artifacts if they don't exist
+  if [ ! -d "organizations/peerOrganizations" ]; then
+    createOrgs
+    createConsortium
+  fi
+
+  COMPOSE_FILES="-f ${COMPOSE_FILE_BASE}"
+
+  if [ "${DATABASE}" == "couchdb" ]; then
+    COMPOSE_FILES="${COMPOSE_FILES} -f ${COMPOSE_FILE_COUCH}"
+  fi
+
+  IMAGE_TAG=$IMAGETAG docker-compose ${COMPOSE_FILES} up -d 2>&1
+
+  docker ps -a
+  if [ $? -ne 0 ]; then
+    fatalln "Unable to start network"
+  fi
 }
 
 # Tear down running neteork
