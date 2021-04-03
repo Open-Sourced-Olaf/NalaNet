@@ -242,6 +242,8 @@ affiliations:
       - department2
    pa:
       - department1
+   ta: 
+      - department1
 
 #############################################################################
 #  Signing section
