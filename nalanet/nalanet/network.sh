@@ -393,6 +393,9 @@ function createOrgs() {
 
   fi
 
+  infoln "Generating CCP files for GA, PA, and TA"
+  ./organizations/ccp-generate.sh
+
 }
 
 # Once you create the organization crypto material, you need to create the

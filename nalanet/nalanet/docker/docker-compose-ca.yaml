@@ -55,6 +55,7 @@ services:
     volumes:
       - ../organizations/fabric-ca/ta:/etc/hyperledger/fabric-ca-server
     container_name: ca_ta 
+      - CORE_PEER_ID=peer0.ga.nalanet.com
     networks:
       - nalanet
 
