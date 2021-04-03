@@ -8,6 +8,8 @@ export PATH=${PWD}/../bin:$PATH
 export FABRIC_CFG_PATH=${PWD}/configtx
 export VERBOSE=false
 
+. scripts/utils.sh
+
 # Obtain the OS and Architecture string that will be used to select the correct
 # native binaries for your platform, e.g., darwin-amd64 or linux-amd64
 OS_ARCH=$(echo "$(uname -s | tr '[:upper:]' '[:lower:]' | sed 's/mingw64_nt.*/windows/')-$(uname -m | sed 's/x86_64/amd64/g')" | awk '{print tolower($0)}')
@@ -54,7 +56,143 @@ CA_IMAGETAG="latest"
 # default database
 DATABASE="leveldb"
 
-. scripts/utils.sh
+# Parse commandline args
+
+## Parse mode
+if [[ $# -lt 1 ]]; then
+  printHelp
+  exit 0
+else
+  MODE=$1
+  shift
+fi
+
+# parse a createChannel subcommand if used
+if [[ $# -ge 1 ]]; then
+  key="$1"
+  if [[ "$key" == "createChannel" ]]; then
+    export MODE="createChannel"
+    shift
+  fi
+fi
+
+# parse flags
+
+while [[ $# -ge 1 ]]; do
+  key="$1"
+  case $key in
+  -h)
+    printHelp $MODE
+    exit 0
+    ;;
+  -c)
+    CHANNEL_NAME="$2"
+    shift
+    ;;
+  -ca)
+    CRYPTO="Certificate Authorities"
+    ;;
+  -r)
+    MAX_RETRY="$2"
+    shift
+    ;;
+  -d)
+    CLI_DELAY="$2"
+    shift
+    ;;
+  -s)
+    DATABASE="$2"
+    shift
+    ;;
+  -ccl)
+    CC_SRC_LANGUAGE="$2"
+    shift
+    ;;
+  -ccn)
+    CC_NAME="$2"
+    shift
+    ;;
+  -ccv)
+    CC_VERSION="$2"
+    shift
+    ;;
+  -ccs)
+    CC_SEQUENCE="$2"
+    shift
+    ;;
+  -ccp)
+    CC_SRC_PATH="$2"
+    shift
+    ;;
+  -ccep)
+    CC_END_POLICY="$2"
+    shift
+    ;;
+  -cccg)
+    CC_COLL_CONFIG="$2"
+    shift
+    ;;
+  -cci)
+    CC_INIT_FCN="$2"
+    shift
+    ;;
+  -i)
+    IMAGETAG="$2"
+    shift
+    ;;
+  -cai)
+    CA_IMAGETAG="$2"
+    shift
+    ;;
+  -verbose)
+    VERBOSE=true
+    shift
+    ;;
+  *)
+    errorln "Unknown flag: $key"
+    printHelp
+    exit 1
+    ;;
+  esac
+  shift
+done
+
+# Are we generating crypto material with this command?
+if [ ! -d "organizations/peerOrganizations" ]; then
+  CRYPTO_MODE="with crypto from '${CRYPTO}'"
+else
+  CRYPTO_MODE=""
+fi
+
+# Determine mode of operation and printing out what we asked for
+if [ "$MODE" == "up" ]; then
+  infoln "Starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE}' ${CRYPTO_MODE}"
+elif [ "$MODE" == "createChannel" ]; then
+  infoln "Creating channel '${CHANNEL_NAME}'."
+  infoln "If network is not up, starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE} ${CRYPTO_MODE}"
+elif [ "$MODE" == "down" ]; then
+  infoln "Stopping network"
+elif [ "$MODE" == "restart" ]; then
+  infoln "Restarting network"
+elif [ "$MODE" == "deployCC" ]; then
+  infoln "deploying chaincode on channel '${CHANNEL_NAME}'"
+else
+  printHelp
+  exit 1
+fi
+
+if [ "${MODE}" == "up" ]; then
+  networkUp
+elif [ "${MODE}" == "createChannel" ]; then
+  createChannel
+elif [ "${MODE}" == "deployCC" ]; then
+  deployCC
+elif [ "${MODE}" == "down" ]; then
+  networkDown
+else
+  printHelp
+  exit 1
+fi
 
 # Obtain CONTAINER_IDS and remove them
 # TODO Might want to make this optional - could clear other containers
