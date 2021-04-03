@@ -6,7 +6,7 @@
 version: '2'
 
 networks:
-  test:
+  nalanet:
 
 services:
   couchdb0:
@@ -22,7 +22,7 @@ services:
     ports:
       - "5984:5984"
     networks:
-      - test
+      - nalanet
 
   peer0.ga.nalanet.com:
     environment:
@@ -49,7 +49,7 @@ services:
     ports:
       - "7984:5984"
     networks:
-      - test
+      - nalanet
 
   peer0.pa.nalanet.com:
     environment:
@@ -62,3 +62,23 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
     depends_on:
       - couchdb1
+    
+  couchdb2:
+    container_name: couchdb2
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "7984:5984"
+    networks:
+      - nalanet
+  peer0.ta.nalanet.com:
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
+    depends_on:
+      - couchdb2
+
