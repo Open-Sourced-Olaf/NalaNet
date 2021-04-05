@@ -30,25 +30,25 @@ ORG=ga
 P0PORT=7051
 CAPORT=7054
 PEERPEM=organizations/peerOrganizations/ga.nalanet.com/tlsca/tlsca.ga.nalanet.com-cert.pem
-CAPEM=organizations/peerOrganizations/ga.nalanet.com/ca/ca.ga.example.com-cert.pem
+CAPEM=organizations/peerOrganizations/ga.nalanet.com/ca/ca.ga.nalanet.com-cert.pem
 
 echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" >organizations/peerOrganizations/ga.nalanet.com/connection-ga.json
-echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" >organizations/peerOrganizations/ga.example.com/connection-ga.yaml
+echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" >organizations/peerOrganizations/ga.nalanet.com/connection-ga.yaml
 
 ORG=pa
 P0PORT=9051
 CAPORT=8054
-PEERPEM=organizations/peerOrganizations/pa.example.com/tlsca/tlsca.pa.example.com-cert.pem
-CAPEM=organizations/peerOrganizations/pa.example.com/ca/ca.pa.example.com-cert.pem
+PEERPEM=organizations/peerOrganizations/pa.nalanet.com/tlsca/tlsca.pa.nalanet.com-cert.pem
+CAPEM=organizations/peerOrganizations/pa.nalanet.com/ca/ca.pa.nalanet.com-cert.pem
 
-echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" >organizations/peerOrganizations/pa.example.com/connection-pa.json
+echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" >organizations/peerOrganizations/pa.nalanet.com/connection-pa.json
 echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" >organizations/peerOrganizations/pa.nalanet.com/connection-pa.yaml
 
 ORG=ta
 P0PORT=10051
 CAPORT=10054
-PEERPEM=organizations/peerOrganizations/ta.example.com/tlsca/tlsca.ta.example.com-cert.pem
-CAPEM=organizations/peerOrganizations/ta.example.com/ca/ca.ta.example.com-cert.pem
+PEERPEM=organizations/peerOrganizations/ta.nalanet.com/tlsca/tlsca.ta.nalanet.com-cert.pem
+CAPEM=organizations/peerOrganizations/ta.nalanet.com/ca/ca.ta.nalanet.com-cert.pem
 
-echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" >organizations/peerOrganizations/ta.example.com/connection-ta.json
+echo "$(json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" >organizations/peerOrganizations/ta.nalanet.com/connection-ta.json
 echo "$(yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" >organizations/peerOrganizations/ta.nalanet.com/connection-ta.yaml

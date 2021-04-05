@@ -164,36 +164,6 @@ else
   CRYPTO_MODE=""
 fi
 
-# Determine mode of operation and printing out what we asked for
-if [ "$MODE" == "up" ]; then
-  infoln "Starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE}' ${CRYPTO_MODE}"
-elif [ "$MODE" == "createChannel" ]; then
-  infoln "Creating channel '${CHANNEL_NAME}'."
-  infoln "If network is not up, starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE} ${CRYPTO_MODE}"
-elif [ "$MODE" == "down" ]; then
-  infoln "Stopping network"
-elif [ "$MODE" == "restart" ]; then
-  infoln "Restarting network"
-elif [ "$MODE" == "deployCC" ]; then
-  infoln "deploying chaincode on channel '${CHANNEL_NAME}'"
-else
-  printHelp
-  exit 1
-fi
-
-if [ "${MODE}" == "up" ]; then
-  networkUp
-elif [ "${MODE}" == "createChannel" ]; then
-  createChannel
-elif [ "${MODE}" == "deployCC" ]; then
-  deployCC
-elif [ "${MODE}" == "down" ]; then
-  networkDown
-else
-  printHelp
-  exit 1
-fi
-
 # Obtain CONTAINER_IDS and remove them
 # TODO Might want to make this optional - could clear other containers
 # This function is called when you bring a network down
@@ -339,10 +309,10 @@ function createOrgs() {
       fatalln "Failed to generate certificates..."
     fi
 
-    infoln "Creating TaxAgent Identities"
+    infoln "Creating TA Identities"
 
     set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-taxagent.yaml --output="organizations"
+    cryptogen generate --config=./organizations/cryptogen/crypto-config-ta.yaml --output="organizations"
     res=$?
     { set +x; } 2>/dev/null
     if [ $res -ne 0 ]; then
@@ -477,7 +447,6 @@ function networkUp() {
 function networkDown() {
   # stop all the containers we created.
   docker-compose -f $COMPOSE_FILE_BASE -f $COMPOSE_FILE_COUCH -f $COMPOSE_FILE_CA down --volumes --remove-orphans
-  docker-compose -f $COMPOSE_FILE_COUCH_ORG3 -f $COMPOSE_FILE_ORG3 down --volumes --remove-orphans
   # Don't remove the generated artifacts -- note, the ledgers are always removed
   if [ "$MODE" != "restart" ]; then
     # Bring down the network, deleting the volumes
@@ -509,3 +478,33 @@ function deployCC() {
     fatalln "Deploying chaincode failed"
   fi
 }
+
+# Determine mode of operation and printing out what we asked for
+if [ "$MODE" == "up" ]; then
+  infoln "Starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE}' ${CRYPTO_MODE}"
+elif [ "$MODE" == "createChannel" ]; then
+  infoln "Creating channel '${CHANNEL_NAME}'."
+  infoln "If network is not up, starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE} ${CRYPTO_MODE}"
+elif [ "$MODE" == "down" ]; then
+  infoln "Stopping network"
+elif [ "$MODE" == "restart" ]; then
+  infoln "Restarting network"
+elif [ "$MODE" == "deployCC" ]; then
+  infoln "deploying chaincode on channel '${CHANNEL_NAME}'"
+else
+  printHelp
+  exit 1
+fi
+
+if [ "${MODE}" == "up" ]; then
+  networkUp
+elif [ "${MODE}" == "createChannel" ]; then
+  createChannel
+elif [ "${MODE}" == "deployCC" ]; then
+  deployCC
+elif [ "${MODE}" == "down" ]; then
+  networkDown
+else
+  printHelp
+  exit 1
+fi
