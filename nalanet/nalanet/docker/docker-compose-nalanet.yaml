@@ -1,8 +1,3 @@
-# Copyright IBM Corp. All Rights Reserved.
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-
 version: '2'
 
 volumes:
@@ -53,6 +48,7 @@ services:
     container_name: peer0.ga.nalanet.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
+      #Generic peer variables
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       # the following setting starts chaincode containers on the same
       # bridge network as the peers
@@ -69,12 +65,9 @@ services:
       - CORE_PEER_ID=peer0.ga.nalanet.com
       - CORE_PEER_ADDRESS=peer0.ga.nalanet.com:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-      -
       - CORE_PEER_CHAINCODEADDRESS=peer0.ga.nalanet.com:7052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
-      
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.ga.nalanet.com:7051
-      
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.ga.nalanet.com:7051
       - CORE_PEER_LOCALMSPID=GAMSP
     volumes:
@@ -110,12 +103,9 @@ services:
       - CORE_PEER_ID=peer0.pa.nalanet.com
       - CORE_PEER_ADDRESS=peer0.pa.nalanet.com:9051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
-      -
       - CORE_PEER_CHAINCODEADDRESS=peer0.pa.nalanet.com:9052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
-      -
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.pa.nalanet.com:9051
-      -
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.pa.nalanet.com:9051
       - CORE_PEER_LOCALMSPID=PAMSP
     volumes:
@@ -151,12 +141,9 @@ services:
       - CORE_PEER_ID=peer0.ta.nalanet.com
       - CORE_PEER_ADDRESS=peer0.ta.nalanet.com:10051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
-      -
       - CORE_PEER_CHAINCODEADDRESS=peer0.ta.nalanet.com:10052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
-
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.ta.nalanet.com:10051
-      -
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.ta.nalanet.com:10051
       - CORE_PEER_LOCALMSPID=PAMSP
     volumes:
@@ -170,7 +157,6 @@ services:
       - 10051:10051
     networks:
       - nalanet
-  
   cli:
     container_name: cli
     image: hyperledger/fabric-tools:$IMAGE_TAG
