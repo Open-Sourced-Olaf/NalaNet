@@ -1,83 +1,78 @@
 Organizations:
-    #TODO: this file is going to have to be redone
-    # SampleOrg defines an MSP using the sampleconfig.  It should never be used
-    # in production but may be used as a template for other definitions
     - &OrdererOrg
-        Name: OrdererOrg
-        ID: OrdererMSP
-        MSPDir: ../organizations/ordererOrganizations/nalanet.com/msp
-        Policies:
-            Readers:
-                Type: Signature
-                Rule: "OR('OrdererMSP.member')"
-            Writers:
-                Type: Signature
-                Rule: "OR('OrdererMSP.member')"
-            Admins:
-                Type: Signature
-                Rule: "OR('OrdererMSP.admin')"
+      Name: OrdererOrg
+      ID: OrdererMSP
+      MSPDir: ../organizations/ordererOrganizations/nalanet.com/msp
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: "OR('OrdererMSP.member')"
+          Writers:
+              Type: Signature
+              Rule: "OR('OrdererMSP.member')"
+          Admins:
+              Type: Signature
+              Rule: "OR('OrdererMSP.admin')"
 
-        OrdererEndpoints:
-            - orderer.nalanet.com:7050
+      OrdererEndpoints:
+          - orderer.nalanet.com:7050
 
     - &GA
-        Name: GAMSP
-        ID: GAMSP
-        MSPDir: ../organizations/peerOrganizations/ga.nalanet.com/msp
-        Policies:
-            Readers:
-                Type: Signature
-                #TODO: thnk about this
-                Rule: "OR('GAMSP.admin','GAMSP.peer','GAMSP.client')"
-            Writers:
-                Type: Signature
-                Rule: "OR('GAMSP.admin', 'GAMSP.client')"
+      Name: GAMSP
+      ID: GAMSP
 
-            Admins:
-                Type: Signature
-                Rule: "OR('GAMSP.admin')"
-            Endorsment:
-                Type: Signature
-                Rule: "OR('GAMSP.peer')"
+      MSPDir: ../organizations/peerOrganizations/ga.nalanet.com/msp
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: "OR('GAMSP.admin', 'GAMSP.peer', 'GAMSP.client')"
+          Writers:
+              Type: Signature
+              Rule: "OR('GAMSP.admin', 'GAMSP.client')"
+          Admins:
+              Type: Signature
+              Rule: "OR('GAMSP.admin')"
+          Endorsement:
+              Type: Signature
+              Rule: "OR('GAMSP.peer')"
 
     - &PA
-        Name: PAMSP
-        ID: PAMSP
-        MSPDir: ../organizations/peerOrganizations/pa.nalanet.com/msp
-        Policies:
-            Readers:
-                Type: Signature
-                Rule: "OR('PAMSP.admin','PAMSP.peer', 'PAMSP.client')"
-            Writers:
-                Type: Signature
-                Rule: "OR('PAMSP.admin','PAMSP.client')"
-            Admins:
-                Type: Signature
-                Rule: "OR('PAMSP.admin')"
-            Endorsment:
-                Type: Signature
-                Rule: "OR('PAMSP.peer')"
+      Name: PAMSP
+      ID: PAMSP
 
+      MSPDir: ../organizations/peerOrganizations/pa.nalanet.com/msp
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: "OR('PAMSP.admin', 'PAMSP.peer', 'PAMSP.client')"
+          Writers:
+              Type: Signature
+              Rule: "OR('PAMSP.admin', 'PAMSP.client')"
+          Admins:
+              Type: Signature
+              Rule: "OR('PAMSP.admin')"
+          Endorsement:
+              Type: Signature
+              Rule: "OR('PAMSP.peer')"
+    
     - &TA
-        Name: TAMSP
-        ID: TAMSP
-        MSPDir: ../organizations/peerOrganizations/ta.nalanet.com/msp
-        # Policies defines the set of policies at this level of the config tree
-        # For organization policies, their canonical path is usually
-        #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
-        Policies:
-            Readers:
-                Type: Signature
-                Rule: "OR('TAMSP.admin','TAMSP.peer', 'TAMSP.client')"
-            Writers:
-                Type: Signature
-                Rule: "OR('TAMSP.admin','TAMSP.client')"
-            Admins:
-                Type: Signature
-                Rule: "OR('TAMSP.admin')"
-            Endorsment:
-                Type: Signature
-                Rule: "OR('TAMSP.peer')"
+      Name: TAMSP
+      ID: TAMSP
+
+      MSPDir: ../organizations/peerOrganizations/ta.nalanet.com/msp
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: "OR('TAMSP.admin', 'TAMSP.peer', 'TAMSP.client')"
+          Writers:
+              Type: Signature
+              Rule: "OR('TAMSP.admin', 'TAMSP.client')"
+          Admins:
+              Type: Signature
+              Rule: "OR('TAMSP.admin')"
+          Endorsement:
+              Type: Signature
+              Rule: "OR('TAMSP.peer')"
 Capabilities:
     Channel: &ChannelCapabilities
         V2_0: true
@@ -85,8 +80,10 @@ Capabilities:
         V2_0: true
     Application: &ApplicationCapabilities
         V2_0: true
+
 Application: &ApplicationDefaults
     Organizations:
+
     Policies:
         Readers:
             Type: ImplicitMeta
@@ -108,8 +105,9 @@ Application: &ApplicationDefaults
         <<: *ApplicationCapabilities
 Orderer: &OrdererDefaults
     OrdererType: etcdraft
+
     Addresses:
-        - orderer.nalanet.com: 7050
+        - orderer.nalanet.com:7050
 
     EtcdRaft:
         Consenters:
@@ -117,29 +115,14 @@ Orderer: &OrdererDefaults
               Port: 7050
               ClientTLSCert: ../organizations/ordererOrganizations/nalanet.com/orderers/orderer.nalanet.com/tls/server.crt
               ServerTLSCert: ../organizations/ordererOrganizations/nalanet.com/orderers/orderer.nalanet.com/tls/server.crt
+
     BatchTimeout: 2s
-
-    # Batch Size: Controls the number of messages batched into a block
     BatchSize:
-        # Max Message Count: The maximum number of messages to permit in a batch
         MaxMessageCount: 10
-
-        # Absolute Max Bytes: The absolute maximum number of bytes allowed for
-        # the serialized messages in a batch.
         AbsoluteMaxBytes: 99 MB
 
-        # Preferred Max Bytes: The preferred maximum number of bytes allowed for
-        # the serialized messages in a batch. A message larger than the preferred
-        # max bytes will result in a batch larger than preferred max bytes.
         PreferredMaxBytes: 512 KB
-
-    # Organizations is the list of orgs which are defined as participants on
-    # the orderer side of the network
     Organizations:
-
-    # Policies defines the set of policies at this level of the config tree
-    # For Orderer policies, their canonical path is
-    #   /Channel/Orderer/<PolicyName>
     Policies:
         Readers:
             Type: ImplicitMeta
@@ -150,37 +133,23 @@ Orderer: &OrdererDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
-        # BlockValidation specifies what signatures must be included in the block
-        # from the orderer for the peer to validate it.
         BlockValidation:
             Type: ImplicitMeta
             Rule: "ANY Writers"
-
 Channel: &ChannelDefaults
-    # Policies defines the set of policies at this level of the config tree
-    # For Channel policies, their canonical path is
-    #   /Channel/<PolicyName>
     Policies:
-        # Who may invoke the 'Deliver' API
         Readers:
             Type: ImplicitMeta
             Rule: "ANY Readers"
-        # Who may invoke the 'Broadcast' API
         Writers:
             Type: ImplicitMeta
             Rule: "ANY Writers"
-        # By default, who may modify elements at this config level
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
-
-    # Capabilities describes the channel level capabilities, see the
-    # dedicated Capabilities section elsewhere in this file for a full
-    # description
     Capabilities:
         <<: *ChannelCapabilities
 Profiles:
-    #TODO: rename the genesis to sth else
     TwoOrgsOrdererGenesis:
         <<: *ChannelDefaults
         Orderer:
