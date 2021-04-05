@@ -1,29 +1,11 @@
-################################################################################
-#
-#   Section: Organizations
-#
-#   - This section defines the different organizational identities which will
-#   be referenced later in the configuration.
-#
-################################################################################
 Organizations:
-#TODO: this file is going to have to be redone
+    #TODO: this file is going to have to be redone
     # SampleOrg defines an MSP using the sampleconfig.  It should never be used
     # in production but may be used as a template for other definitions
     - &OrdererOrg
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
         Name: OrdererOrg
-
-        # ID to load the MSP definition as
         ID: OrdererMSP
-
-        # MSPDir is the filesystem path which contains the MSP configuration
-        MSPDir: ../organizations/ordererOrganizations/example.com/msp
-
-        # Policies defines the set of policies at this level of the config tree
-        # For organization policies, their canonical path is usually
-        #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+        MSPDir: ../organizations/ordererOrganizations/nalanet.com/msp
         Policies:
             Readers:
                 Type: Signature
@@ -36,61 +18,46 @@ Organizations:
                 Rule: "OR('OrdererMSP.admin')"
 
         OrdererEndpoints:
-            - orderer.example.com:7050
+            - orderer.nalanet.com:7050
 
     - &GA
-        Name: GA
-        SkipAsForeign: false
-        # ID is the key by which this org's MSP definition will be referenced.
-        ID: GA
-        # MSPDir is the filesystem path which contains the MSP configuration.
-        MSPDir: ../organizations/ordererOrganizations/ga.nalanet.com/msp  
-
-        Policies: &GAPolicies
+        Name: GAMSP
+        ID: GAMSP
+        MSPDir: ../organizations/peerOrganizations/ga.nalanet.com/msp
+        Policies:
             Readers:
-                Type: Signature 
+                Type: Signature
                 #TODO: thnk about this
-                Rule: "OR('GAMSP.admin',
-                 'GAMSP.peer','GAMSP.client')"
-                Writers:
-                    Type: Signature
-                    Rule: "OR('GAMSP.admin', 'GAMSP.client')"
+                Rule: "OR('GAMSP.admin','GAMSP.peer','GAMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('GAMSP.admin', 'GAMSP.client')"
 
-                Admins:
-                    Type: Signature
-                    Rule: "OR('GAMSP.admin')"
-                Endorsment:
-                    Type: Signature
-                    Rule: "OR('GAMSP.peer')"
-                    
+            Admins:
+                Type: Signature
+                Rule: "OR('GAMSP.admin')"
+            Endorsment:
+                Type: Signature
+                Rule: "OR('GAMSP.peer')"
 
-        OrdererEndpoints:
-        AnchorPeers:
-            - Host:
-              Port: 
     - &PA
         Name: PAMSP
         ID: PAMSP
         MSPDir: ../organizations/peerOrganizations/pa.nalanet.com/msp
-        # Policies defines the set of policies at this level of the config tree
-        # For organization policies, their canonical path is usually
-        #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('PAMSP.admin',
-                'PAMSP.peer', 'PAMSP.client')"
-                Writers:
-                    Type: Signature
-                    Rule: "OR('PAMSP.admin',
-                    'PAMSP.client')"
-                Admins:
-                    Type: Signature
-                    Rule: "OR('PAMSP.admin')"
-                Endorsment:
-                    Type: Signature
-                    Rule: "OR('PAMSP.peer')"
-    
+                Rule: "OR('PAMSP.admin','PAMSP.peer', 'PAMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('PAMSP.admin','PAMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('PAMSP.admin')"
+            Endorsment:
+                Type: Signature
+                Rule: "OR('PAMSP.peer')"
+
     - &TA
         Name: TAMSP
         ID: TAMSP
@@ -101,19 +68,141 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('TAMSP.admin',
-                'TAMSP.peer', 'TAMSP.client')"
-                Writers:
-                    Type: Signature
-                    Rule: "OR('TAMSP.admin',
-                    'TAMSP.client')"
-                Admins:
-                    Type: Signature
-                    Rule: "OR('TAMSP.admin')"
-                Endorsment:
-                    Type: Signature
-                    Rule: "OR('TAMSP.peer')"
+                Rule: "OR('TAMSP.admin','TAMSP.peer', 'TAMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('TAMSP.admin','TAMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('TAMSP.admin')"
+            Endorsment:
+                Type: Signature
+                Rule: "OR('TAMSP.peer')"
+Capabilities:
+    Channel: &ChannelCapabilities
+        V2_0: true
+    Orderer: &OrdererCapabilities
+        V2_0: true
+    Application: &ApplicationCapabilities
+        V2_0: true
+Application: &ApplicationDefaults
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
 
+    Capabilities:
+        <<: *ApplicationCapabilities
+Orderer: &OrdererDefaults
+    OrdererType: etcdraft
+    Addresses:
+        - orderer.nalanet.com: 7050
 
+    EtcdRaft:
+        Consenters:
+            - Host: orderer.nalanet.com
+              Port: 7050
+              ClientTLSCert: ../organizations/ordererOrganizations/nalanet.com/orderers/orderer.nalanet.com/tls/server.crt
+              ServerTLSCert: ../organizations/ordererOrganizations/nalanet.com/orderers/orderer.nalanet.com/tls/server.crt
+    BatchTimeout: 2s
 
+    # Batch Size: Controls the number of messages batched into a block
+    BatchSize:
+        # Max Message Count: The maximum number of messages to permit in a batch
+        MaxMessageCount: 10
 
+        # Absolute Max Bytes: The absolute maximum number of bytes allowed for
+        # the serialized messages in a batch.
+        AbsoluteMaxBytes: 99 MB
+
+        # Preferred Max Bytes: The preferred maximum number of bytes allowed for
+        # the serialized messages in a batch. A message larger than the preferred
+        # max bytes will result in a batch larger than preferred max bytes.
+        PreferredMaxBytes: 512 KB
+
+    # Organizations is the list of orgs which are defined as participants on
+    # the orderer side of the network
+    Organizations:
+
+    # Policies defines the set of policies at this level of the config tree
+    # For Orderer policies, their canonical path is
+    #   /Channel/Orderer/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        # BlockValidation specifies what signatures must be included in the block
+        # from the orderer for the peer to validate it.
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+    # Policies defines the set of policies at this level of the config tree
+    # For Channel policies, their canonical path is
+    #   /Channel/<PolicyName>
+    Policies:
+        # Who may invoke the 'Deliver' API
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        # Who may invoke the 'Broadcast' API
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        # By default, who may modify elements at this config level
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+    # Capabilities describes the channel level capabilities, see the
+    # dedicated Capabilities section elsewhere in this file for a full
+    # description
+    Capabilities:
+        <<: *ChannelCapabilities
+Profiles:
+    #TODO: rename the genesis to sth else
+    TwoOrgsOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *GA
+                    - *PA
+                    - *TA
+    TwoOrgsChannel:
+        Consortium: SampleConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *GA
+                - *PA
+                - *TA
+            Capabilities:
+                <<: *ApplicationCapabilities

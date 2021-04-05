@@ -35,7 +35,7 @@
         }
     },
     "certificateAuthorities": {
-        "ca.org${ORG}.nalanet.com": {
+        "ca.${ORG}.nalanet.com": {
             "url": "https://localhost:${CAPORT}",
             "caName": "ca-${ORG}",
             "tlsCACerts": {
