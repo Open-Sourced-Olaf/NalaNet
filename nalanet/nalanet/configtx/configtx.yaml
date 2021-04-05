@@ -1,0 +1,119 @@
+################################################################################
+#
+#   Section: Organizations
+#
+#   - This section defines the different organizational identities which will
+#   be referenced later in the configuration.
+#
+################################################################################
+Organizations:
+#TODO: this file is going to have to be redone
+    # SampleOrg defines an MSP using the sampleconfig.  It should never be used
+    # in production but may be used as a template for other definitions
+    - &OrdererOrg
+        # DefaultOrg defines the organization which is used in the sampleconfig
+        # of the fabric.git development environment
+        Name: OrdererOrg
+
+        # ID to load the MSP definition as
+        ID: OrdererMSP
+
+        # MSPDir is the filesystem path which contains the MSP configuration
+        MSPDir: ../organizations/ordererOrganizations/example.com/msp
+
+        # Policies defines the set of policies at this level of the config tree
+        # For organization policies, their canonical path is usually
+        #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+
+        OrdererEndpoints:
+            - orderer.example.com:7050
+
+    - &GA
+        Name: GA
+        SkipAsForeign: false
+        # ID is the key by which this org's MSP definition will be referenced.
+        ID: GA
+        # MSPDir is the filesystem path which contains the MSP configuration.
+        MSPDir: ../organizations/ordererOrganizations/ga.nalanet.com/msp  
+
+        Policies: &GAPolicies
+            Readers:
+                Type: Signature 
+                #TODO: thnk about this
+                Rule: "OR('GAMSP.admin',
+                 'GAMSP.peer','GAMSP.client')"
+                Writers:
+                    Type: Signature
+                    Rule: "OR('GAMSP.admin', 'GAMSP.client')"
+
+                Admins:
+                    Type: Signature
+                    Rule: "OR('GAMSP.admin')"
+                Endorsment:
+                    Type: Signature
+                    Rule: "OR('GAMSP.peer')"
+                    
+
+        OrdererEndpoints:
+        AnchorPeers:
+            - Host:
+              Port: 
+    - &PA
+        Name: PAMSP
+        ID: PAMSP
+        MSPDir: ../organizations/peerOrganizations/pa.nalanet.com/msp
+        # Policies defines the set of policies at this level of the config tree
+        # For organization policies, their canonical path is usually
+        #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('PAMSP.admin',
+                'PAMSP.peer', 'PAMSP.client')"
+                Writers:
+                    Type: Signature
+                    Rule: "OR('PAMSP.admin',
+                    'PAMSP.client')"
+                Admins:
+                    Type: Signature
+                    Rule: "OR('PAMSP.admin')"
+                Endorsment:
+                    Type: Signature
+                    Rule: "OR('PAMSP.peer')"
+    
+    - &TA
+        Name: TAMSP
+        ID: TAMSP
+        MSPDir: ../organizations/peerOrganizations/ta.nalanet.com/msp
+        # Policies defines the set of policies at this level of the config tree
+        # For organization policies, their canonical path is usually
+        #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('TAMSP.admin',
+                'TAMSP.peer', 'TAMSP.client')"
+                Writers:
+                    Type: Signature
+                    Rule: "OR('TAMSP.admin',
+                    'TAMSP.client')"
+                Admins:
+                    Type: Signature
+                    Rule: "OR('TAMSP.admin')"
+                Endorsment:
+                    Type: Signature
+                    Rule: "OR('TAMSP.peer')"
+
+
+
+
