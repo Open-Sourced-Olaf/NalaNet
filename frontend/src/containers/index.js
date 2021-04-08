@@ -17,5 +17,4 @@ export {
   TheHeaderDropdownNotif,
   TheHeaderDropdownTasks,
   TheLayout,
-  TheSidebar
 }
