@@ -18,7 +18,7 @@ const dbConfig = require('../db/connectionConfig.js');
 const sessionStore = new MySQLSessionStore(dbConfig);
 app.use(
   session({
-    secret: process.env.SESSION_KEY,
+    secret: 'NalaNet-secret',
     store: sessionStore,
     resave: false,
     saveUninitialized: true,
