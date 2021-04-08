@@ -88,12 +88,12 @@ const Register = () => {
                       name="usertype"
                       id="usertype"
                       onChange={(e) => setUserType(e.target.value)}
+                      required={true}
                     >
                       <option value="0">User Type</option>
-                      <option value="LA">Land Owner</option>
+
                       <option value="GA">Government Agent</option>
                       <option value="PA">Planning Agent</option>
-                      <option value="TA">Tax Agent</option>
                     </CSelect>
                   </CInputGroup>
                   <CInputGroup className="mb-3">
@@ -107,6 +107,7 @@ const Register = () => {
                       placeholder="Password"
                       autoComplete="new-password"
                       onChange={(e) => setPassword(e.target.value)}
+                      required={true}
                     />
                   </CInputGroup>
                   <CInputGroup className="mb-4">
