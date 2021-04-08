@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
-import { UsersContext } from "../../../contexts/Users.js";
-import { Redirect } from "react-router-dom";
+import React, { useState, useContext } from 'react'
+import { UsersContext } from '../../../contexts/Users.js'
+import { Redirect } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -15,32 +15,32 @@ import {
   CInputGroupText,
   CRow,
   CSelect,
-} from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+} from '@coreui/react'
+import CIcon from '@coreui/icons-react'
 
 const Register = () => {
-  const user = useContext(UsersContext);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [userType, setUserType] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const user = useContext(UsersContext)
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [userType, setUserType] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   const submitForm = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     const { title, text } = await user.registerUser(
       username,
       email,
       userType,
       password,
-      confirmPassword
-    );
-    alert(text);
-  };
-
-  if (user.isLoggedIn) {
-    return <Redirect to="/" />;
+      confirmPassword,
+    )
+    alert(text)
   }
+
+  //if (user.isLoggedIn) {
+  //return <Redirect to="/" />;
+  //}
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
@@ -128,26 +128,12 @@ const Register = () => {
                   </CButton>
                 </CForm>
               </CCardBody>
-              <CCardFooter className="p-4">
-                <CRow>
-                  <CCol xs="12" sm="6">
-                    <CButton className="btn-facebook mb-1" block>
-                      <span>facebook</span>
-                    </CButton>
-                  </CCol>
-                  <CCol xs="12" sm="6">
-                    <CButton className="btn-twitter mb-1" block>
-                      <span>twitter</span>
-                    </CButton>
-                  </CCol>
-                </CRow>
-              </CCardFooter>
             </CCard>
           </CCol>
         </CRow>
       </CContainer>
     </div>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

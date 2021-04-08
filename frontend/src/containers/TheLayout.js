@@ -1,22 +1,15 @@
 import React from 'react'
-import {
-  TheContent,
-  TheSidebar,
-  TheFooter,
-  TheHeader
-} from './index'
+import { TheContent, TheSidebar, TheFooter, TheHeader } from './index'
 
 const TheLayout = () => {
-
   return (
     <div className="c-app c-default-layout">
-      <TheSidebar/>
       <div className="c-wrapper">
-        <TheHeader/>
+        <TheHeader />
         <div className="c-body">
-          <TheContent/>
+          <TheContent />
         </div>
-        <TheFooter/>
+        <TheFooter />
       </div>
     </div>
   )
