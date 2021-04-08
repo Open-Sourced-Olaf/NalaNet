@@ -7,6 +7,8 @@ class User {
     try {
       const matchingUsersSql =
         'SELECT * FROM users WHERE name = CONVERT(? USING utf8) COLLATE utf8_bin';
+
+        console.log(username);
       const [matchingUsers] = await execQuery(matchingUsersSql, [username]);
       if (matchingUsers.length === 0) {
         const passwordHash = await bcrypt.hash(password, 10);
