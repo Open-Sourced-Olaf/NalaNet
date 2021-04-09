@@ -23,8 +23,6 @@ It's quite simple. Block means data. Chain means storage or record. But wait, th
 `Nalanet` is a permissioned blockchain network built on top of Hypeledger Fabric that aims to provide safer and more accurate decentralized storage of information on land ownership in Rwanda. 
 
 
-
-
 ## Architecture Flow
 ![image info](./nalanet_architecture.jpg)
 
