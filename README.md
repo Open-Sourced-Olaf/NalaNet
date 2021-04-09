@@ -1,3 +1,5 @@
+# About
+`Nalanet` is a permissioned blockchain network built on top of Hypeledger Fabric that aims to provide safer and more accurate decentralized storage of information on land ownership in Rwanda. 
 # Origin Story
 Rwanda is a bit of a magical place! Awesome place to call home. I am a little biased of course. That being said, however, land ownership has been traditionally a major source of interpersonal conflicts. How do you know who owns what land? What happens when someone rightly or falsely claims that a piece of land belongs to them? For a long time, there were paper certificates. But those could easily be forged, leading to even more conflicts and court cases. I hope that's starting to sound like a serious data problem. If not yet, I will define it more concretely. 
 
@@ -24,6 +26,7 @@ It's quite simple. Block means data. Chain means storage or record. But wait, th
 
 
 ## Architecture Flow
+![image info](./nalanet_architecture.jpg)
 
 ## Included Components
 * Azure Cloud Virtual Machines
@@ -44,6 +47,7 @@ It's quite simple. Block means data. Chain means storage or record. But wait, th
 * Azure Ubuntu Virtual machines. 
 * Shell scriping
 * Go
+* Docker Swarm
 ## Prerequisites
 
 # Running the Project Locally
@@ -54,6 +58,11 @@ It's quite simple. Block means data. Chain means storage or record. But wait, th
 5. Clone the repository
 6. Modify the configuration files
 7. Run the application
+# Future Steps
+Right now the project is still in its infancy. We only have two organizations on our network. And land owners don't have access to the network. As next steps, we would to:
+1. Add A few more organizations
+2. Enable Land Owners to have access to the network
+3. (Hopefully)Pitch the project to the Rwanda Development Board. 
 # Final Word
 You could very well ask, what do we know about land? And that would be a fair question. The answer is, quite frankly, not much. But there's a fundamental problem, and it doesn't take much to see what it is, so we won't take credit for that. Applying for a land certificate in Rwanda is kind of a pain. Data is fragmented and various departments have to work to gether to try to sync data across a few decentralized dbs. that has to change. I am not by any means implying that we completely solved the problem; only a tiny step in the right direction, we hope. 
 # License
