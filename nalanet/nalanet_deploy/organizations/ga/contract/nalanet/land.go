@@ -128,7 +128,7 @@ func Deserialize(bytes []byte, land *Land) error {
 	err := json.Unmarshal(bytes, land)
 
 	if err != nil {
-		return fmt.Errorf("Error deserializing land land. %s", err.Error())
+		return fmt.Errorf("Error deserializing land. %s", err.Error())
 	}
 
 	return nil
