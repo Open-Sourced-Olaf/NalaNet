@@ -44,16 +44,15 @@ type jsonLand struct {
 }
 
 // Land defines a piece of land
+// TODO:Might be better to add `DesignatedUse` field
 type Land struct {
 	LandNumber       string `json:"landNumber"`
 	Owner            string `json:"owner"`
-	RegisterDateTime string `json:"RegisterDateTime"`
+	RegisterDateTime string `json:"registerDateTime"`
 	FaceValue        int    `json:"faceValue"`
-	// MaturityDateTime string `json:"maturityDateTime"`
-	//Owner            string `json:"owner"`
-	state State  `metadata:"currentState"`
-	class string `metadata:"class"`
-	key   string `metadata:"key"`
+	state            State  `metadata:"currentState"`
+	class            string `metadata:"class"`
+	key              string `metadata:"key"`
 }
 
 // UnmarshalJSON special handler for managing JSON marshalling
@@ -128,7 +127,7 @@ func Deserialize(bytes []byte, land *Land) error {
 	err := json.Unmarshal(bytes, land)
 
 	if err != nil {
-		return fmt.Errorf("Error deserializing land. %s", err.Error())
+		return fmt.Errorf("error deserializing land. %s", err.Error())
 	}
 
 	return nil
