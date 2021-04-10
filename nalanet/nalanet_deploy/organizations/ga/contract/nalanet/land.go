@@ -44,6 +44,7 @@ type jsonLand struct {
 }
 
 // Land defines a piece of land
+// TODO:Might be better to add `DesignatedUse` field
 type Land struct {
 	LandNumber       string `json:"landNumber"`
 	Owner            string `json:"owner"`
@@ -128,7 +129,7 @@ func Deserialize(bytes []byte, land *Land) error {
 	err := json.Unmarshal(bytes, land)
 
 	if err != nil {
-		return fmt.Errorf("Error deserializing land. %s", err.Error())
+		return fmt.Errorf("error deserializing land. %s", err.Error())
 	}
 
 	return nil
