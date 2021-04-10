@@ -48,13 +48,11 @@ type jsonLand struct {
 type Land struct {
 	LandNumber       string `json:"landNumber"`
 	Owner            string `json:"owner"`
-	RegisterDateTime string `json:"RegisterDateTime"`
+	RegisterDateTime string `json:"registerDateTime"`
 	FaceValue        int    `json:"faceValue"`
-	// MaturityDateTime string `json:"maturityDateTime"`
-	//Owner            string `json:"owner"`
-	state State  `metadata:"currentState"`
-	class string `metadata:"class"`
-	key   string `metadata:"key"`
+	state            State  `metadata:"currentState"`
+	class            string `metadata:"class"`
+	key              string `metadata:"key"`
 }
 
 // UnmarshalJSON special handler for managing JSON marshalling

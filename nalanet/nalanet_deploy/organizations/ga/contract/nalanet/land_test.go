@@ -1,7 +1,9 @@
 package land
 
+//TODO: ADD MORE TESTS
 import (
 	ledgerapi "contract/ledger-api"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -60,7 +62,7 @@ func TestGetSplitKey(t *testing.T) {
 	land.LandNumber = "someland"
 	land.Owner = "someowner"
 
-	assert.Equal(t, []string{"someowner", "someland"}, land.GetSplitKey(), "should return owner and paper number as split key")
+	assert.Equal(t, []string{"someowner", "someland"}, land.GetSplitKey(), "should return owner and land number as split key")
 }
 
 func TestSerialize(t *testing.T) {
@@ -73,7 +75,9 @@ func TestSerialize(t *testing.T) {
 
 	bytes, err := land.Serialize()
 	assert.Nil(t, err, "should not error on serialize")
-	assert.Equal(t, `{"landNumber": "someland", "owner": "someowner", "registerDateTime":"sometime", "faceValue":1000, "currentState":2, "class": org.nalanet.land", "key": "someowner:someland"}`, string(bytes), "shoudl return JSON formatted value")
+	//fmt.Println(string(bytes))
+	assert.Equal(t, `{"landNumber":"someland","owner":"someowner","registerDateTime":"sometime","faceValue":1000,"currentState":2,"class":"org.nalanet.land","key":"someowner:someland"}`, string(bytes), "should return JSON formatted value")
+
 }
 
 func TestDeserialize(t *testing.T) {
@@ -97,6 +101,7 @@ func TestDeserialize(t *testing.T) {
 	badJson := `{"landNumber":"someland","owner":"someowner","registerDateTime":"sometime","faceValue":"NaN","currentState":2,"class":"org.nalanet.land","key":"someowner:someland"}`
 	land = new(Land)
 	err = Deserialize([]byte(badJson), land)
-	assert.EqualError(t, err, "Error deserializing land. json: connot unmarshal string into Go struct field jsonLand.faceValue of type int", "should return error for bad data")
+	fmt.Println(err)
+	assert.EqualError(t, err, "error deserializing land. json: cannot unmarshal string into Go struct field jsonLand.faceValue of type int", "should return error for bad data")
 
 }
