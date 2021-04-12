@@ -1,0 +1,2 @@
+[34m2021-04-10 17:18:58.960 CAT [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2021-04-10 17:18:59.201 CAT [channelCmd] executeJoin -> INFO 002[0m Successfully submitted proposal to join channel
