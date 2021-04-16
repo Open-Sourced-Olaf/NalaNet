@@ -1,12 +1,16 @@
 package land
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
+	"github.com/hyperledger/fabric-samples/asset-transfer-basic/chaincode-go/chaincode/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 // #########
@@ -82,5 +86,31 @@ func TestRegister(t *testing.T) {
 	land, err = contract.Register(ctx, "someland", "someowner", "somedate", 1000)
 	assert.EqualError(t, err, "AddLand error", "should return error when add land fails")
 	assert.Nil(t, land, "should not return land when fails")
+
+}
+
+func TestReadLand(t *testing.T) {
+	chaincodeStub := &mocks.chaincodeStub{}
+	transactionContext := &mocks.TransactionContext{}
+	transactionContext.GetStubReturns(chaincodeStub)
+
+	expectedLand := &chaincodeStub.Asset{ID: "someland:someowner"}
+	bytes, err := json.Marshal(expectedLand)
+	require.NoError(t, err)
+
+	chaincodeStub.GetSTateReturns(bytes, nil)
+	landContract := Contract{}
+	land, err := landContract.ReadLand(transactionContext, "someowner", "someland")
+	require.NoError(t, err)
+	require.Equal(t, expectedLand, land)
+
+	chaincodeStub.GetSTateReturns(nil, fmt.Errorf("unable to retrieve land"))
+	_, err = landContract.ReadLand(transactionContext, "someland", "someowner")
+	require.EqualError(t, err, "failed to read from world state: unable to retrieve land")
+
+	chaincodeStub.GetSTateReturns(nil, nil)
+	land, err = landContract.ReadLand(transactionContext, "soemland", "someowner")
+	require.EqualError(t, err, "the land someland:someowner does not exist")
+	require.Nil(t, land)
 
 }
