@@ -15,7 +15,7 @@ const org1UserId = "appUser";
 const ccp = buildCCPOrg1();
 const gateway = new Gateway();
 
-router.get("/getAllAssets", async function (req, res) {
+router.get("/getAllLand", async function (req, res) {
   try {
     let contract = await setUpContract(
       ccp,
@@ -24,7 +24,7 @@ router.get("/getAllAssets", async function (req, res) {
       chaincodeName,
       org1UserId
     );
-    let result = await contract.evaluateTransaction("GetAllAssets");
+    let result = await contract.evaluateTransaction("GetAllLand");
 
     res.status(200).json({ response: JSON.parse(result.toString()) });
 
@@ -35,30 +35,7 @@ router.get("/getAllAssets", async function (req, res) {
   }
 });
 
-router.get("/readAsset/:assetId", async function (req, res) {
-  try {
-    let contract = await setUpContract(
-      ccp,
-      gateway,
-      channelName,
-      chaincodeName,
-      org1UserId
-    );
-    let result = await contract.evaluateTransaction(
-      "ReadAsset",
-      req.params.assetId
-    );
-
-    res.status(200).json({ response: JSON.parse(result.toString()) });
-
-    await gateway.disconnect();
-  } catch (error) {
-    console.error(`Failed to evaluate transaction: ${error}`);
-    res.status(500).json({ error: error });
-  }
-});
-
-router.get("/assetExists/:assetId", async function (req, res) {
+router.get("/readAsset/:landNumber", async function (req, res) {
   try {
     let contract = await setUpContract(
       ccp,
@@ -68,8 +45,9 @@ router.get("/assetExists/:assetId", async function (req, res) {
       org1UserId
     );
     let result = await contract.evaluateTransaction(
-      "AssetExists",
-      req.params.assetId
+      "ReadLand",
+      req.params.owner,
+      req.params.landNumber
     );
 
     res.status(200).json({ response: JSON.parse(result.toString()) });
@@ -81,7 +59,31 @@ router.get("/assetExists/:assetId", async function (req, res) {
   }
 });
 
-router.post("/createAsset", async function (req, res) {
+router.get("/landExists/:landNumber", async function (req, res) {
+  try {
+    let contract = await setUpContract(
+      ccp,
+      gateway,
+      channelName,
+      chaincodeName,
+      org1UserId
+    );
+    let result = await contract.evaluateTransaction(
+      "landExists",
+      req.params.owner,
+      req.params.landNumber
+    );
+
+    res.status(200).json({ response: JSON.parse(result.toString()) });
+
+    await gateway.disconnect();
+  } catch (error) {
+    console.error(`Failed to evaluate transaction: ${error}`);
+    res.status(500).json({ error: error });
+  }
+});
+
+router.post("/registerLand", async function (req, res) {
   try {
     let contract = await setUpContract(
       ccp,
@@ -91,12 +93,11 @@ router.post("/createAsset", async function (req, res) {
       org1UserId
     );
     let result = await contract.submitTransaction(
-      "CreateAsset",
-      req.body.assetId,
-      req.body.color,
-      req.body.size,
+      "Register",
       req.body.owner,
-      req.body.appraisedValue
+      req.body.landNumber,
+      req.body.registerDateTime,
+      req.body.faceValue,
     );
 
     res.json({ response: JSON.parse(result.toString()) });
@@ -108,7 +109,7 @@ router.post("/createAsset", async function (req, res) {
   }
 });
 
-router.post("/updateAsset", async function (req, res) {
+router.post("/transferLand", async function (req, res) {
   try {
     let contract = await setUpContract(
       ccp,
@@ -118,39 +119,13 @@ router.post("/updateAsset", async function (req, res) {
       org1UserId
     );
     let result = await contract.submitTransaction(
-      "UpdateAsset",
-      req.body.assetId,
-      req.body.color,
-      req.body.size,
-      req.body.owner,
-      req.body.appraisedValue
+      "TransferLand",
+      req.body.currentOwner,
+      req.body.landID,
+      req.body.newOner
     );
 
-    res.send('Asset updated');
-
-    await gateway.disconnect();
-  } catch (error) {
-    console.error(`Failed to evaluate transaction: ${error}`);
-    res.json({ error: error });
-  }
-});
-
-router.post("/transferAsset", async function (req, res) {
-  try {
-    let contract = await setUpContract(
-      ccp,
-      gateway,
-      channelName,
-      chaincodeName,
-      org1UserId
-    );
-    let result = await contract.submitTransaction(
-      "TransferAsset",
-      req.body.assetId,
-      req.body.owner
-    );
-
-    res.send('Asset transferred');
+    res.send('Land transferred');
 
     await gateway.disconnect();
   } catch (error) {
