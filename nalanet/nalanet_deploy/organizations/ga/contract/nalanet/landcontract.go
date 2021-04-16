@@ -102,3 +102,13 @@ func (contract *Contract) GetAllLand(ctx contractapi.TransactionContextInterface
 
 	return assets, nil
 }
+
+// AssetExists returns true when asset with given (owner and landNumber) exists in world state
+func (contract *Contract) LandExists(ctx contractapi.TransactionContextInterface, owner string, landNubmer string) (bool, error) {
+	landJSON, err := ctx.GetStub().GetState(CreateLandKey(owner, landNubmer))
+	if err != nil {
+		return false, fmt.Errorf("failed to read from world state: %v", err)
+	}
+
+	return landJSON != nil, nil
+}
