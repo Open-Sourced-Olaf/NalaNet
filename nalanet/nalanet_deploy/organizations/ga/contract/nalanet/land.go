@@ -55,6 +55,11 @@ type Land struct {
 	key              string `metadata:"key"`
 }
 
+type LandWithDesignatedUse struct {
+	Land
+	DesignatedUse string
+}
+
 // UnmarshalJSON special handler for managing JSON marshalling
 func (land *Land) UnmarshalJSON(data []byte) error {
 	jland := jsonLand{landAlias: (*landAlias)(land)}

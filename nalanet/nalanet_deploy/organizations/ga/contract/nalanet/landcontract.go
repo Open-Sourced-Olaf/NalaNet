@@ -112,3 +112,8 @@ func (contract *Contract) LandExists(ctx contractapi.TransactionContextInterface
 
 	return landJSON != nil, nil
 }
+
+// DesiginateUse returns the land with it's planned use. this function can only be called by the pa(planing agent)
+func (contract *Contract) DesiginateUse(ctx contractapi.TransactionContextInterface, ownner string, landNubmer string) (*LandWithDesignatedUse, error) {
+
+}
